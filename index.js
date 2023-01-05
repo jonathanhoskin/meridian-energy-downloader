@@ -29,9 +29,11 @@ const headless = !args.includes('--disable-headless');
     await page.click('#login-button');
     await page.waitForTimeout(5000);
 
-    await page.click('#usage-tab');
-    await page.waitForSelector('#usage_show_registers');
-    await page.click('#usage_show_registers');
+    await page.goto('https://secure.meridianenergy.co.nz/reports/consumption_data')
+
+    // await page.click('#usage-tab');
+    // await page.waitForSelector('#usage_show_registers');
+    // await page.click('#usage_show_registers');
 
     const client = await page.target().createCDPSession();
 
@@ -41,7 +43,8 @@ const headless = !args.includes('--disable-headless');
     });
 
     await page.waitForTimeout(1000);
-    await page.click('[value="Download"]');
+    // await page.click('[value="Download"]');
+    await page.click('div#detailed_export > div.date-selector-wrap > form > fieldset > div.buttons > button[name="download"]')
 
     let files = [];
     for (let i = 0; i < 90; i++) {
@@ -56,7 +59,7 @@ const headless = !args.includes('--disable-headless');
     await browser.close();
 
     if (files.length) {
-        fs.copyFileSync(downloadFolder + '/' + files[0], './meridian-lastest.csv');
+        fs.copyFileSync(downloadFolder + '/' + files[0], './meridian-consumption.csv');
     }
     if (fs.existsSync(downloadFolder)) {
         fs.rmSync(downloadFolder, { recursive: true, force: true });
